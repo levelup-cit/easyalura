@@ -1,6 +1,8 @@
 package br.com.easyalura;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "instrutores")
@@ -15,6 +17,9 @@ public class Instrutor {
 
   @Column(name = "linkedin_url")
   private String linkedinUrl;
+
+  @ManyToMany(mappedBy = "instrutores")
+  private List<Curso> cursos = new ArrayList<>();
 
   @Deprecated
   public Instrutor() {
@@ -65,5 +70,9 @@ public class Instrutor {
         ", descricao='" + descricao + '\'' +
         ", linkedinUrl='" + linkedinUrl + '\'' +
         '}';
+  }
+
+  public void adicionaCurso(Curso curso) {
+    this.cursos.add(curso);
   }
 }

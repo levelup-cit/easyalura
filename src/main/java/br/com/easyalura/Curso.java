@@ -2,13 +2,16 @@ package br.com.easyalura;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "cursos")
 public class Curso {
 
   // tem que poder ser nulo (evitar tipos primitivos)
-  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   private String titulo;
@@ -26,19 +29,18 @@ public class Curso {
   @Column(name = "data_atualizacao")
   private LocalDate dataAtualizacao;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  private Instrutor instrutor;
+  @ManyToMany
+  private List<Instrutor> instrutores = new ArrayList<>();
 
   @Deprecated
   protected Curso() {
   }
 
-  public Curso(String titulo, String descricao, String slug, int cargaHoraria, Instrutor instrutor) {
+  public Curso(String titulo, String descricao, String slug, int cargaHoraria) {
     this.titulo = titulo;
     this.descricao = descricao;
     this.slug = slug;
     this.cargaHoraria = cargaHoraria;
-    this.instrutor = instrutor;
     this.dataCriacao = LocalDate.now();
   }
 
@@ -108,7 +110,20 @@ public class Curso {
         ", cargaHoraria=" + cargaHoraria +
         ", dataCriacao=" + dataCriacao +
         ", dataAtualizacao=" + dataAtualizacao +
-        ", instrutor=" + instrutor + // usa o instrutor!
+        ", instrutores=" + instrutores + // usa o instrutor!
         '}';
+  }
+
+  public void adicionaInstrutor(Instrutor instrutor) {
+    this.instrutores.add(instrutor);
+    instrutor.adicionaCurso(this);
+  }
+
+  public List<Instrutor> getInstrutores() {
+    return instrutores;
+  }
+
+  public void setInstrutores(List<Instrutor> instrutores) {
+    this.instrutores = instrutores;
   }
 }
